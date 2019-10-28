@@ -1,0 +1,27 @@
+{
+  "name": "unity-n-workflows",
+  "version": "0.0.1",
+  "description": "Workflow helpers",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shadowmint/unity-n-workflows.git"
+  },
+  "files": [
+    "index.js",
+    "scripts",
+    "src"
+  ],
+  "author": "douglas.linder@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shadowmint/unity-n-workflows/issues"
+  },
+  "homepage": "https://github.com/shadowmint/unity-n-workflows",
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "dependencies": {
+    "unity-n-promises": "github:shadowmint/unity-n-promises"
+  }
+}
