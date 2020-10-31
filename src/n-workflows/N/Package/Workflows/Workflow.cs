@@ -9,9 +9,15 @@ namespace N.Package.Workflows
     {
         public abstract string Id { get; }
 
-        protected WorkflowLogger Logger { get; } = new WorkflowLogger();
+        protected WorkflowLogger Logger { get; set; } = new WorkflowLogger();
 
-        protected bool Aborted { get; private set; }
+        protected WorkflowState State;
+
+        public bool Aborted => State == WorkflowState.Aborted;
+
+        public bool Failed => State == WorkflowState.Failed;
+
+        public bool Resolved => State == WorkflowState.Resolved;
 
         public async Task<T> Run(IWorkflowManager manager = null)
         {
@@ -35,15 +41,17 @@ namespace N.Package.Workflows
                 {
                     manager.EndWorkflow(this);
                     Logger.Warn("Workflow aborted");
-                    return default(T);
+                    return result;
                 }
 
+                State = WorkflowState.Resolved;
                 manager.EndWorkflow(this);
                 Logger.Info("Workflow completed");
                 return result;
             }
             catch (Exception error)
             {
+                State = WorkflowState.Failed;
                 manager.EndWorkflow(this);
                 Logger.Warn($"Workflow failed: {error}");
                 throw;
@@ -65,7 +73,7 @@ namespace N.Package.Workflows
         /// </summary>
         public void Abort()
         {
-            Aborted = true;
+            State = WorkflowState.Aborted;
         }
 
         /// <summary>

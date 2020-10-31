@@ -11,12 +11,12 @@ namespace N.Package.Workflows
             _id = id;
         }
 
-        public void Info(string message)
+        public virtual void Info(string message)
         {
             Debug.Log($"Workflow {_id}: {message}");
         }
 
-        public void Warn(string message)
+        public virtual void Warn(string message)
         {
             Debug.LogWarning($"Workflow {_id}: {message}");
         }

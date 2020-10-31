@@ -12,8 +12,6 @@ namespace N.Package.Workflows
     {
         private TaskCompletionSource<bool> _taskCompletionSource;
 
-        private bool _resolved;
-
         protected sealed override Task<bool> Execute()
         {
             _taskCompletionSource = new TaskCompletionSource<bool>();
@@ -26,7 +24,7 @@ namespace N.Package.Workflows
             var enumerator = ExecuteAsync();
             while (true)
             {
-                if (_resolved)
+                if (State != WorkflowState.Pending)
                 {
                     break;
                 }
@@ -52,19 +50,22 @@ namespace N.Package.Workflows
 
                 yield return item;
             }
+
+            if (State == WorkflowState.Aborted)
+            {
+                _taskCompletionSource.SetResult(false);
+            }
         }
 
         protected abstract IEnumerator ExecuteAsync();
 
         protected void Resolve()
         {
-            _resolved = true;
             _taskCompletionSource.SetResult(true);
         }
 
         protected void Reject(Exception error)
         {
-            _resolved = true;
             _taskCompletionSource.SetException(error);
         }
     }
